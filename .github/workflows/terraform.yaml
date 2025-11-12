@@ -12,6 +12,15 @@ on:
           - true
           - false
 
+      destroy:
+        description: 'Destruir ambiente?'
+        required: true
+        default: false
+        type: choice
+        options:
+          - true
+          - false
+
 permissions:
   id-token: write
   contents: read
@@ -45,6 +54,15 @@ jobs:
       - name: Terraform Apply 
         run: terraform apply -auto-approve tfplan.tfout
         if: github.event.inputs.apply == 'true'
+
+      - name: Plan Destroy
+        run: terraform plan -destroy tfplan.tfout
+        if: github.event.inputs.destroy == 'true'
+
+      - name: Terraform Destroy 
+        run: terraform apply -destroy -auto-approve tfplan.tfout
+        if: github.event.inputs.destroy == 'true'
+  
 
 
 
