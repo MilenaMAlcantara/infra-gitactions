@@ -15,11 +15,20 @@ on:
       destroy:
         description: 'Destruir ambiente?'
         required: true
-        default: false
+        default: 'false'
         type: choice
         options:
           - true
           - false
+
+      plan_destroy:
+        description: 'Planejar o destroy do ambiente?'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false   
 
 permissions:
   id-token: write
@@ -56,11 +65,11 @@ jobs:
         if: github.event.inputs.apply == 'true'
 
       - name: Plan Destroy
-        run: terraform plan -destroy tfplan.tfout
-        if: github.event.inputs.destroy == 'true'
+        run: terraform plan -destroy -out=tfplandestroy
+        if: github.event.inputs.plan_destroy == 'true'
 
-      - name: Terraform Destroy 
-        run: terraform apply -destroy -auto-approve tfplan.tfout
+      - name: Terraform Destroy
+        run: terraform apply -destroy -auto-approve tfplandestroy
         if: github.event.inputs.destroy == 'true'
   
 
